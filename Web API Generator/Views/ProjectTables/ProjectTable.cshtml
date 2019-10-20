@@ -1,0 +1,197 @@
+﻿@model Web_API_Generator.Models.TableViewModels
+
+@{
+    ViewBag.Title = "ProjectTable";
+}
+
+<h2>ProjectTable</h2>
+
+<div>
+    <h4>TableViewModels</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Project.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Project.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DataFieldType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DataFieldType)
+        </dd>
+
+    </dl>
+</div>
+
+
+<br />
+<hr />
+<h2>DataFieldViewModels</h2>
+<p>
+    @Html.ActionLink("Create New", "Add_DataFieldType", new { id = Model.Id })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Type
+        </th>
+        <th>
+            Lengh
+        </th>
+        <th>
+            Nullable
+        </th>
+        <th>
+            DataAnnotationView
+        </th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.DataFieldViewModels)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lengh)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nullable)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataAnnotationViewModels.Count)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit_DataFieldType", new { id = item.Id }) |
+                @Html.ActionLink("Details", "DataFieldDetails", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete_DataFieldType", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>
+
+
+
+<br />
+<hr />
+<h2>dataFieldForeignKeyViewModels</h2>
+@if (Model.DataFieldType == "Mobile")
+{
+    <p>
+        @Html.ActionLink("Create New", "Add_DataForeignKey_Mobile", new { id = Model.Id })
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Required
+            </th>
+            <th>
+                DataFieldView
+            </th>   
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.dataFieldForeignKeyViewModels)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Required)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataFieldView.Name)
+                </td> 
+                <td>
+                    @Html.ActionLink("Edit", "Edit_DataForeignKey_Mobile", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete_DataForeignKey_Mobile", new { id = item.Id })
+                </td>
+            </tr>
+        }
+
+    </table>
+
+}
+else
+{
+    <p>
+        @Html.ActionLink("Create New", "Add_DataForeignKey", new { id = Model.Id })
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Required
+            </th>
+            <th>
+                DataFieldView
+            </th>
+            <th>
+                Table
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.dataFieldForeignKeyViewModels)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Required)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataFieldView.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TableView.Name)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+
+    </table>
+
+}

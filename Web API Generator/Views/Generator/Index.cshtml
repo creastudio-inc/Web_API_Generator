@@ -1,0 +1,397 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<br />
+<style>
+    #consolejs {
+        min-height: 100%;
+        color: #fff;
+        /*padding: 0.5em 1em;*/
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .console {
+        position: relative;
+        font-family: monospace,monospace;
+        color: #fff;
+        width: calc(100% - 3em);
+        max-width: 100%;
+        max-height: 300px;
+        overflow-y: auto;
+        margin: 1em 1em;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 0.5em;
+        box-shadow: 0 0.75em 3em rgba(50, 50, 50, 0.5);
+        z-index: 100;
+        line-height: 1.5;
+    }
+
+    .console-input {
+        font-family: monospace,monospace;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        min-width: calc(100% - 2em);
+        resize: none;
+    }
+
+        .console-input:before {
+            content: '> ';
+            color: #FC3565;
+            vertical-align: top;
+        }
+
+    .output-cmd:before {
+        content: '> ';
+        color: #FC3565;
+        vertical-align: top;
+    }
+
+    .output-text:before {
+        content: '> ';
+        color: #5F8787;
+        font-weight: 600 !important;
+        vertical-align: top;
+    }
+
+    .output-text,
+    .output-cmd {
+        width: 100%;
+        display: block;
+    }
+
+    .console-inner {
+        padding: 0.3em 1.1em;
+    }
+
+    .output-text,
+    .output-cmd {
+        display: block;
+        white-space: pre;
+    }
+
+    #outputs div {
+        opacity: 0.85;
+    }
+
+        #outputs div div {
+            color: #46f01d;
+            opacity: 0.8;
+            text-decoration: none;
+        }
+
+    #outputs a {
+        color: #46f01d;
+        opacity: 0.8;
+        text-decoration: underline;
+    }
+
+    .console-inner .output-text#ready {
+        color: #3df5b8;
+        font-style: italic;
+        opacity: 0.75;
+    }
+
+    .particles-js-canvas-el {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+    }
+</style>
+<div class="row">
+    <div class="col-lg-6">
+        <button id="operation">Operation</button>
+        <br />
+        <b>Enum</b>
+        <div id="progressbar_Enum" style="width:500px">
+            <span class="caption">Loading...please wait</span>
+        </div>
+
+        <b>BaseModel</b>
+        <div id="progressbar_BaseModel" style="width:500px">
+            <span class="caption">Loading...please wait</span>
+        </div>
+
+        <b>Models</b>
+        <div id="progressbar_Models" style="width:500px">
+            <span class="caption">Loading...please wait</span>
+        </div>
+
+        <b>MobileModels</b>
+        <div id="progressbar_MobileModels" style="width:500px">
+            <span class="caption">Loading...please wait</span>
+        </div>
+
+        <b>Context</b>
+        <div id="progressbar_Context" style="width:500px">
+            <span class="caption">Loading...please wait</span>
+        </div>
+
+        <b>Migrations</b>
+        <div id="progressbar_Migrations" style="width:500px">
+            <span class="caption">Loading...please wait</span>
+        </div>
+
+    </div>
+    <div class="col-lg-6">
+        <div id="consolejs">
+            <div class='console'>
+                <div class='console-inner'>
+                    <div id="outputs">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.1.0/markdown-it.min.js"></script>
+    <script>
+        output('qsdqsd');
+        // Output to Console
+        function output(print) {
+            if (!window.md) {
+                window.md = window.markdownit({
+                    linkify: true,
+                    breaks: true
+                })
+            }
+            $("#outputs").append(window.md.render(print))
+            $(".console").scrollTop($('.console-inner').height());
+        }
+
+        // Break Value
+        var newLine = "<br/> &nbsp;";
+
+
+    </script>
+    <script>
+             //Progressbar initialization
+
+      $("#progressbar_Enum").progressbar({
+    value: 0
+});
+$("#progressbar_BaseModel").progressbar({
+    value: 0
+});
+$("#progressbar_Models").progressbar({
+    value: 0
+});
+$("#progressbar_MobileModels").progressbar({
+    value: 0
+});
+$("#progressbar_Context").progressbar({
+    value: 0
+});
+$("#progressbar_Migrations").progressbar({
+    value: 0
+});
+
+function Enum() {
+    if ($('#progressbar_Enum').val() >= 100) {
+        $('#progressbar_Enum').val(0);
+    }
+    $('#progressbar_Enum').progressbar('value', 0);
+
+    //Perform POST for triggering long running operation
+    $.post('@Html.Raw(Url.Action("Operation",new {ProjectID=(int)ViewBag.ProjectID,TypeOperation=GeneratorLibrary.Enum.GeneratorRequest.Enum}))', function(data) {
+        //Updating progress
+        $("#progressbar_Enum").progressbar('value', data.progress);
+        //Setting the timer
+        window.progressIntervalId = window.setInterval(function() {
+            //Getting current operation progress
+            $.get('@Html.Raw(Url.Action("OperationProgress"))', function(data) {
+                //Updating progress
+                $("#progressbar_Enum").progressbar('value', data.progress);
+                $("#progressbar_Enum").children('span.caption').html(data.progress + '%');
+                  output(data.text);
+
+                //If operation is complete
+                if (data.progress == 100) {
+                    //Clear timer
+                    window.clearInterval(window.progressIntervalId);
+                    BaseModel();
+                }
+            });
+        }, 500);
+    });
+}
+
+
+function BaseModel() {
+
+    if ($('#progressbar_BaseModel').val() >= 100) {
+        $('#progressbar_BaseModel').val(0);
+    }
+    $("#progressbar_BaseModel").progressbar('value', 0);
+    //Perform POST for triggering long running operation
+    $.post('@Html.Raw(Url.Action("Operation",new {ProjectID=(int)ViewBag.ProjectID,TypeOperation=GeneratorLibrary.Enum.GeneratorRequest.BaseModel}))', function(data) {
+        //Updating progress
+        $("#progressbar_BaseModel").progressbar('value', data.progress);
+        //Setting the timer
+        window.progressIntervalId = window.setInterval(function() {
+            //Getting current operation progress
+            $.get('@Url.Action("OperationProgress")', function(data) {
+                //Updating progress
+                $("#progressbar_BaseModel").progressbar('value', data.progress);
+                $("#progressbar_BaseModel").children('span.caption').html(data.progress + '%');
+                  output(data.text);
+                //If operation is complete
+                if (data.progress == 100) {
+                    //Clear timer
+                    window.clearInterval(window.progressIntervalId);
+                    Models();
+                }
+            });
+        }, 500);
+    });
+
+}
+
+
+function Models() {
+    if ($('#progressbar_Models').val() >= 100) {
+        $('#progressbar_Models').val(0);
+    }
+    $('#progressbar_Models').progressbar('value', 0);
+
+    //Perform POST for triggering long running operation
+    $.post('@Html.Raw(Url.Action("Operation",new {ProjectID=(int)ViewBag.ProjectID,TypeOperation=GeneratorLibrary.Enum.GeneratorRequest.Models}))', function(data) {
+        //Updating progress
+        $("#progressbar_Models").progressbar('value', data.progress);
+        //Setting the timer
+        window.progressIntervalId = window.setInterval(function() {
+            //Getting current operation progress
+            $.get('@Html.Raw(Url.Action("OperationProgress"))', function(data) {
+                //Updating progress
+                $("#progressbar_Models").progressbar('value', data.progress);
+                $("#progressbar_Models").children('span.caption').html(data.progress + '%');
+                output(data.text);
+                //If operation is complete
+                if (data.progress == 100) {
+                    //Clear timer
+                    window.clearInterval(window.progressIntervalId);
+                    MobileModels();
+                }
+            });
+        }, 500);
+    });
+}
+
+function MobileModels() {
+    if ($('#progressbar_MobileModels').val() >= 100) {
+        $('#progressbar_MobileModels').val(0);
+    }
+    $('#progressbar_MobileModels').progressbar('value', 0);
+
+    //Perform POST for triggering long running operation
+    $.post('@Html.Raw(Url.Action("Operation",new {ProjectID=(int)ViewBag.ProjectID,TypeOperation=GeneratorLibrary.Enum.GeneratorRequest.MobileModels}))', function(data) {
+        //Updating progress
+        $("#progressbar_MobileModels").progressbar('value', data.progress);
+        $("#progressbar_MobileModels").children('span.caption').html(data.progress + '%');
+        //Setting the timer
+        window.progressIntervalId = window.setInterval(function() {
+            //Getting current operation progress
+            $.get('@Url.Action("OperationProgress")', function(data) {
+                //Updating progress
+                $("#progressbar_MobileModels").progressbar('value', data.progress);
+                $("#progressbar_MobileModels").children('span.caption').html(data.progress + '%');
+                output(data.text);
+                //If operation is complete
+                if (data.progress == 100) {
+                    //Clear timer
+                    window.clearInterval(window.progressIntervalId);
+                    Context();
+                }
+            });
+        }, 500);
+    });
+}
+
+function Context() {
+    if ($('#progressbar_Context').val() >= 100) {
+        $('#progressbar_Context').val(0);
+    }
+    $('#progressbar_Context').progressbar('value', 0);
+
+    //Perform POST for triggering long running operation
+    $.post('@Html.Raw(Url.Action("Operation",new {ProjectID=(int)ViewBag.ProjectID,TypeOperation=GeneratorLibrary.Enum.GeneratorRequest.Context}))', function(data) {
+             //Updating progress
+        $("#progressbar_Context").progressbar('value', data.progress);
+        //Setting the timer
+        window.progressIntervalId = window.setInterval(function() {
+            //Getting current operation progress
+            $.get('@Url.Action("OperationProgress")', function(data) {
+                //Updating progress
+                $("#progressbar_Context").progressbar('value', data.progress);
+                $("#progressbar_Context").children('span.caption').html(data.progress + '%');
+                output(data.text)
+                //If operation is complete
+                if (data.progress == 100) {
+                    //Clear timer
+                    window.clearInterval(window.progressIntervalId);
+                    Migrations();
+                }
+            });
+        }, 500);
+    });
+}
+
+
+function Migrations() {
+    if ($('#progressbar_Migrations').val() >= 100) {
+        $('#progressbar_Migrations').val(0);
+    }
+    $('#progressbar_Migrations').progressbar('value', 0);
+
+    //Perform POST for triggering long running operation
+    $.post('@Html.Raw(Url.Action("Operation",new {ProjectID=(int)ViewBag.ProjectID,TypeOperation=GeneratorLibrary.Enum.GeneratorRequest.Migrations}))', function(data) {
+        //Updating progress
+        $("#progressbar_Migrations").progressbar('value', data.progress);
+        //Setting the timer
+        window.progressIntervalId = window.setInterval(function() {
+            //Getting current operation progress
+            $.get('@Url.Action("OperationProgress")', function(data) {
+                //Updating progress
+                $("#progressbar_Migrations").progressbar('value', data.progress);
+                $("#progressbar_Migrations").children('span.caption').html(data.progress + '%');
+                output(data.text);
+                //If operation is complete
+                if (data.progress == 100) {
+                    //Clear timer
+                    window.clearInterval(window.progressIntervalId);
+                }
+            });
+        }, 500);
+    });
+}
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#progressbar").progressbar({ value: 0 });
+            //Button click event
+            $("#operation").click(function (e) {
+                Enum();
+                //Disabling button
+                $("#operation").attr('disabled', 'disabled');
+                //Making sure that progress indicate 0
+            });
+        });
+    </script>
+}

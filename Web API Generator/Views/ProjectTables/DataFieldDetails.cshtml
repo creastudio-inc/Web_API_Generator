@@ -1,0 +1,107 @@
+﻿@model Web_API_Generator.Models.DataFieldViewModels
+
+@{
+    ViewBag.Title = "DataFieldDetails";
+}
+
+<h2>DataFieldDetails</h2>
+
+<div>
+    <h4>DataFieldViewModels</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Table.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Table.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Lengh)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Lengh)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nullable)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nullable)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+
+<br />
+<hr />
+<h2>DataAnnotation</h2>
+<p>
+    @Html.ActionLink("Create New", "Add_DataAnnotation", new { id = Model.Id })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Param1
+        </th>
+        <th>
+            Param2
+        </th>
+        <th>
+            ErrorMessage
+        </th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.DataAnnotationViewModels)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Param1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Param2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ErrorMessage)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit_DataAnnotation", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete_DataAnnotation", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>
